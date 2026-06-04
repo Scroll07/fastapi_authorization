@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
-from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 
 
 class Base(DeclarativeBase):
@@ -18,34 +19,34 @@ class Users(Base):
 class Roles(Base):
     __tablename__="roles"
 
-    id:
-    name:
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
 
 class Sessions(Base):
     __tablename__="sessions"
 
-    id:
-    user_id:
-    expires_at:
-    is_active:
-    created_at:
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    expires_at: Mapped[datetime]
+    is_active: Mapped[bool] = mapped_column(default=True)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now(timezone.utc))
         
 class Resources(Base):
     __tablename__="resources"
 
-    id:
-    name:
-    is_public:
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    is_public: Mapped[bool] = mapped_column(default=False)
 
 class AccessRules(Base):
     __tablename__="access_rules"
     
-    id:
-    role_id:
-    user_id:
-    resource_id:
-    can_read:
-    can_create:
-    can_update:
-    can_delete:
+    id: Mapped[int] = mapped_column(primary_key=True)
+    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    resource_id: Mapped[int] = mapped_column(ForeignKey("resources.id"))
+    can_read: Mapped[bool] = mapped_column(default=False)
+    can_create: Mapped[bool] = mapped_column(default=False)
+    can_update: Mapped[bool] = mapped_column(default=False)
+    can_delete: Mapped[bool] = mapped_column(default=False)
     
