@@ -1,6 +1,16 @@
-def main():
-    print("Hello from fastapi-authorization!")
+from fastapi import FastAPI
+from contextlib import asynccontextmanager
+
+from src.database import async_engine
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    
+    yield
+    
+    await async_engine.dispose()
 
 
-if __name__ == "__main__":
-    main()
+app = FastAPI(lifespan=lifespan)
+
+
