@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
-
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
+
+from src.schemas.db_schema import UserRoles
 
 
 class Base(DeclarativeBase):
@@ -20,7 +21,7 @@ class Roles(Base):
     __tablename__="roles"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str]
+    name: Mapped[UserRoles]
 
 class Sessions(Base):
     __tablename__="sessions"
