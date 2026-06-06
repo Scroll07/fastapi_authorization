@@ -17,8 +17,18 @@ class SessionDao:
         )
         self.session.add(new_session)
         await self.session.flush()
-        await self.session.commit()
+        # await self.session.commit()
         return new_session
+    
+    async def get_session(self, session_id: int) -> Sessions | None:
+        query = select(Sessions).where(Sessions.id == session_id)
+        result = await self.session.execute(query)
+        session = result.scalar_one_or_none()
+        return session
+    
+    async def make_unactive_session(self, user_session: Sessions) -> None:
+        user_session.is_active = False
+        await self.session.commit()
 
 
 

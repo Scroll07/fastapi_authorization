@@ -6,7 +6,7 @@ from pydantic import BaseModel
 class JWTDecodedData(BaseModel):
     sub: int
     sid: int
-    exp: datetime
+    exp: int
     
 token_types = Literal["access", "refresh"]
     

@@ -15,7 +15,7 @@ class Users(Base):
     email: Mapped[str] = mapped_column()
     password_hash: Mapped[str]
     is_active: Mapped[bool] = mapped_column(default=True)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
 
 class Roles(Base):
     __tablename__="roles"
@@ -28,9 +28,9 @@ class Sessions(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    expires_at: Mapped[datetime]
+    expires_at: Mapped[datetime] = mapped_column(default= lambda: datetime.now(timezone.utc))
     is_active: Mapped[bool] = mapped_column(default=True)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(timezone.utc))
         
 class Resources(Base):
     __tablename__="resources"

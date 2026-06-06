@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta, timezone
 import jwt
 
 from src.schemas.api_schema import JWTDecodedData, Token
@@ -28,7 +27,7 @@ class JWT_Service:
 
 jwt_service = JWT_Service(
     secret_key=s.SECRET_KEY,
-    algoritm="SHA256",
+    algoritm="HS256",
     access_token_expire_in_min=ACCESS_TOKEN_EXPIRE_IN_MIN
 )
                 
