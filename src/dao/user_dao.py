@@ -19,7 +19,6 @@ class UserDao:
     ) -> Users:
         user = Users(email=email, password_hash=password_hash)
         self.session.add(user)
-        await self.session.refresh(user)
         await self.session.flush()
         await self.session.commit()
         return user #CREATE SESSION

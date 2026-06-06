@@ -1,0 +1,25 @@
+from datetime import datetime
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+
+from src.models.models import Sessions
+
+
+class SessionDao:
+    def __init__(self, session: AsyncSession) -> None:
+        self.session = session
+        
+    async def create_session(self, user_id: int, expires_at: datetime) -> Sessions:
+        new_session = Sessions(
+            user_id=user_id,
+            expires_at=expires_at
+        )
+        self.session.add(new_session)
+        await self.session.flush()
+        await self.session.commit()
+        return new_session
+
+
+
+
