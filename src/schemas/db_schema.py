@@ -6,3 +6,7 @@ class UserRoles(StrEnum):
     MANAGER = "manager"
     USER = "user"
     GUEST = "guest"
+    
+class UserFields(StrEnum):
+    ID = "id"
+    EMAIL = "email"
