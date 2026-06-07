@@ -27,7 +27,9 @@ async def verify_user(
 ) -> JWTDecodedData:
     try:
         token_data = jwt_service.decode_token(token=credentials.credentials)
-    except Exception:
+        token_data.sub = int(token_data.sub)
+    except Exception as e:
+        print(e)
         raise HTTPException(401, "Wrong token")
     try:
         user_dao = UserDao(session=db)

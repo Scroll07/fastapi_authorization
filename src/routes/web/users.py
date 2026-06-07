@@ -61,7 +61,7 @@ async def login(
     exp_timestamp = int(expires.timestamp())
     user_session = await session_dao.create_session(user_id=user.id, expires_at=expires)
     token_data = JWTDecodedData(
-        sub=user.id,
+        sub=str(user.id),
         sid=user_session.id,
         exp=exp_timestamp
     )
@@ -87,7 +87,7 @@ async def logout(
     #probably redirect to other page
     return {
         "ok": True,
-        "detail": "Login successful",
+        "detail": "Logout successful",
     }    
     
     

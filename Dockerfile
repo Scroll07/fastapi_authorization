@@ -6,10 +6,14 @@ WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
 
-RUN uv sync --locked --frozen --no-cache --no-dev
+RUN uv sync --frozen --no-cache --no-dev
 
 COPY . .
 
 RUN chmod +x ./scripts/run_app.sh
+
+EXPOSE 8000
+
+ENV PYTHONPATH=.
 
 CMD [ "./scripts/run_app.sh" ]

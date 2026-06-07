@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class JWTDecodedData(BaseModel):
-    sub: int
+    sub: int | str
     sid: int
     exp: int
     
