@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from schemas.db_schema import UserFields
+from src.schemas.db_schema import UserFields
 from src.models.models import Users
 
     
@@ -29,7 +29,7 @@ class UserDao:
         value: str | int
     ) -> Users | None:
         column = getattr(Users, field)
-        query = select(column).where(column == value)
+        query = select(Users).where(column == value)
         result = await self.session.execute(query)
         user = result.scalar_one_or_none()
         return user

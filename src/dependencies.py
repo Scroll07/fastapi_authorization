@@ -3,8 +3,8 @@ from datetime import datetime, timezone
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from dao.user_dao import UserDao
-from schemas.db_schema import UserFields
+from src.dao.user_dao import UserDao
+from src.schemas.db_schema import UserFields
 from src.schemas.api_schema import JWTDecodedData
 from src.database import async_session
 from src.jwt_service import jwt_service
@@ -42,7 +42,7 @@ async def verify_user(
         if session is None:
             raise HTTPException(401, "Wrong session id, session does not exists")
         if not session.is_active:
-            raise HTTPException(403, "Session was expired, try to login")
+            raise HTTPException(401, "Session was expired, try to login")
     
         if user.id != token_data.sub:
             raise HTTPException(401, "Invalid session binding")
