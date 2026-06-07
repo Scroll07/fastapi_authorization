@@ -27,8 +27,6 @@ async def register(
     user = await user_dao.get_user_by_field(field=UserFields.EMAIL, value=email)
     if user is not None:
         raise HTTPException(409, "User with this email already exists")
-    if user and not user.is_active:
-        raise HTTPException(409, "User with this email already exists")
     
     password_hash = PasswordService.hash_password(password=password)
     
@@ -84,10 +82,7 @@ async def logout(
 ):    
     session_dao = SessionDao(session=db)
 
-    session = await session_dao.get_session(session_id=data.sid)
-    if session is None:
-        raise HTTPException(401, "Wrong session")
-    await session_dao.make_unactive_session(user_session=session)
+    await session_dao.make_unactive_session(session_id=data.sid)
     
     #probably redirect to other page
     return {

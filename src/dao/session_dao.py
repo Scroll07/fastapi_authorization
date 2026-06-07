@@ -26,10 +26,12 @@ class SessionDao:
         session = result.scalar_one_or_none()
         return session
     
-    async def make_unactive_session(self, user_session: Sessions) -> None:
-        user_session.is_active = False
+    async def make_unactive_session(self, session_id: int) -> None:
+        session = await self.get_session(session_id=session_id)
+        if not session:
+            raise ValueError("No session to delete")
+        session.is_active = False
         await self.session.commit()
-
 
 
 

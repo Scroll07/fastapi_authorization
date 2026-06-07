@@ -44,6 +44,9 @@ async def verify_user(
         if not session.is_active:
             raise HTTPException(403, "Session was expired, try to login")
     
+        if user.id != token_data.sub:
+            raise HTTPException(401, "Invalid session binding")
+    
         now = datetime.now(timezone.utc)
         if now > session.expires_at:
             raise HTTPException(401, "Token was expired")
