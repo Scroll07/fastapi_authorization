@@ -31,7 +31,7 @@ class SessionDao:
         if not session:
             raise ValueError("No session to delete")
         session.is_active = False
-        await self.session.commit()
+        # await self.session.commit()
 
 
 

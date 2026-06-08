@@ -83,6 +83,7 @@ async def logout(
     session_dao = SessionDao(session=db)
 
     await session_dao.make_unactive_session(session_id=data.sid)
+    await db.commit()
     
     #probably redirect to other page
     return {
@@ -90,5 +91,46 @@ async def logout(
         "detail": "Logout successful",
     }    
     
+
+@web_users.delete("/me")
+async def soft_delete(
+    db: AsyncSession = Depends(get_db),
+    data: JWTDecodedData = Depends(verify_user)
+):    
+    session_dao = SessionDao(session=db)
+    await session_dao.make_unactive_session(session_id=data.sid)
+
+    user_dao = UserDao(session=db)
+    assert data.sub is int
+    await user_dao.make_unactive_user(user_id=data.sub)
+    await db.commit()
     
+    #probably redirect to other page
+    return {
+        "ok": True,
+        "detail": "Account was successully deleted",
+    }    
+    
+
+# @web_users.patch("/me")
+# async def patch_user(
+#     db: AsyncSession = Depends(get_db),
+#     data: JWTDecodedData = Depends(verify_user)
+# ):    
+#     session_dao = SessionDao(session=db)
+#     await session_dao.make_unactive_session(session_id=data.sid)
+
+#     user_dao = UserDao(session=db)
+#     assert data.sub is int
+#     await user_dao.make_unactive_user(user_id=data.sub)
+#     await db.commit()
+    
+#     #probably redirect to other page
+#     return {
+#         "ok": True,
+#         "detail": "Account was successully deleted",
+#     }    
+    
+
+
     

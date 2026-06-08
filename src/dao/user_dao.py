@@ -34,6 +34,13 @@ class UserDao:
         user = result.scalar_one_or_none()
         return user
     
+    async def make_unactive_user(self, user_id: int) -> None:
+        user = await self.get_user_by_field(field=UserFields.ID, value=user_id)
+        if user is None:
+            raise ValueError("Wrong user id")
+        user.is_active = False
+        # await self.session.commit()
+    
     
     
     
