@@ -12,7 +12,10 @@ class Users(Base):
     __tablename__="users"
     
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column()
+    first_name: Mapped[str]
+    last_name: Mapped[str]
+    middle_name: Mapped[str]
+    email: Mapped[str]
     password_hash: Mapped[str]
     is_active: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True) ,default=lambda: datetime.now(timezone.utc))

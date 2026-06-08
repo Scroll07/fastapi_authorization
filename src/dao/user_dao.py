@@ -1,9 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from src.schemas.db_schema import UserFields
+from src.schemas.db_schema import UserFields, UserCreateData
 from src.models.models import Users
-
     
 
 
@@ -14,14 +13,19 @@ class UserDao:
 
     async def create_user(
         self,
-        email: str,
-        password_hash: str 
+        data: UserCreateData
     ) -> Users:
-        user = Users(email=email, password_hash=password_hash)
+        user = Users(
+            first_name=data.first_name,
+            last_name=data.last_name,
+            middle_name=data.middle_name,
+            email=data.email, 
+            password_hash=data.password_hash
+        )
         self.session.add(user)
         await self.session.flush()
         await self.session.commit()
-        return user #CREATE SESSION
+        return user
     
     async def get_user_by_field(
         self, 

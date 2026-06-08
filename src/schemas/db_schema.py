@@ -1,5 +1,7 @@
 from enum import StrEnum
 
+from pydantic import BaseModel, EmailStr
+
 
 class UserRoles(StrEnum):
     ADMIN = "admin"
@@ -10,3 +12,10 @@ class UserRoles(StrEnum):
 class UserFields(StrEnum):
     ID = "id"
     EMAIL = "email"
+    
+class UserCreateData(BaseModel):
+    first_name: str 
+    last_name: str
+    middle_name: str
+    email: EmailStr
+    password_hash: str

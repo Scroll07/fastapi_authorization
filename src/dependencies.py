@@ -27,13 +27,12 @@ async def verify_user(
 ) -> JWTDecodedData:
     try:
         token_data = jwt_service.decode_token(token=credentials.credentials)
-        token_data.sub = int(token_data.sub)
     except Exception as e:
         print(e)
         raise HTTPException(401, "Wrong token")
     try:
         user_dao = UserDao(session=db)
-        user = await user_dao.get_user_by_field(field=UserFields.ID, value=token_data.sub)
+        user = await user_dao.get_user_by_field(field=UserFields.ID, value=int(token_data.sub))
         if user is None:
             raise HTTPException(401, "Wrong user data")
         if not user.is_active:
@@ -46,7 +45,7 @@ async def verify_user(
         if not session.is_active:
             raise HTTPException(401, "Session was expired, try to login")
     
-        if user.id != token_data.sub:
+        if user.id != int(token_data.sub):
             raise HTTPException(401, "Invalid session binding")
     
         now = datetime.now(timezone.utc)
