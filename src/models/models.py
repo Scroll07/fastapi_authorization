@@ -47,7 +47,6 @@ class AccessRules(Base):
     
     id: Mapped[int] = mapped_column(primary_key=True)
     role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"))
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     resource_id: Mapped[int] = mapped_column(ForeignKey("resources.id"))
     can_read: Mapped[bool] = mapped_column(default=False)
     can_create: Mapped[bool] = mapped_column(default=False)
