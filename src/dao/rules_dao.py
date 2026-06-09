@@ -7,6 +7,48 @@ from src.models.models import AccessRules, Roles, Resources
 from src.schemas.api_schema import ResourceNames
 from src.schemas.db_schema import UserRoles
 
+
+PERMISSION_MATRIX: dict[UserRoles, dict[ResourceNames, dict[str, bool]]] = {
+    UserRoles.USER: {
+        ResourceNames.USER: {
+            "can_read": True,
+            "can_update": True,
+            "can_delete": True
+        },
+        ResourceNames.ADMINS: {}
+    },
+    UserRoles.ADMIN: {
+        ResourceNames.USER: {
+            "can_read": True,
+            "can_create": True,
+            "can_update": True,
+            "can_delete": True    
+        },
+        ResourceNames.ADMINS: {
+            "can_read": True,
+            "can_create": True,
+            "can_update": True,
+            "can_delete": True    
+        }
+    },
+    UserRoles.MANAGER: {
+        ResourceNames.USER: {
+            "can_read": True,
+            "can_update": True,
+        },
+        ResourceNames.ADMINS: {
+            "can_read": True,
+        }
+    },
+    UserRoles.GUEST: {
+        ResourceNames.USER: {},
+        ResourceNames.ADMINS: {}
+    }
+}
+
+
+
+
 class RulesDao:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
@@ -40,16 +82,4 @@ class RulesDao:
         return rule
     
     async def initialize_rules(self, roles: list[Roles], resources: list[Resources]) -> None:
-        for role in roles:
-            for resource in resources:
-                if resource.name == ResourceNames.USERS and role.name == UserRoles.USER:
-                    await self.create_rule(
-                        role_id=role.id, 
-                        resource_id=resource.id,
-                        can_read=True,
-                        can_create=True,
-                        can_update=True,
-                        can_delete=True
-                        )
-                    
-
+        pass

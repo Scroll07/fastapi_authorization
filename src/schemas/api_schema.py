@@ -52,5 +52,5 @@ class RegisterRequestData(BaseModel):
         return value
     
 class ResourceNames(StrEnum):
-    USERS = "users"
+    USER = "users"
     ADMINS = "admin"
