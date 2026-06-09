@@ -1,6 +1,7 @@
 from datetime import datetime
+from enum import StrEnum
 from typing import Literal
-from pydantic import BaseModel, Field, field_validator, validate_email, EmailStr
+from pydantic import BaseModel, field_validator, EmailStr
 
 
 class JWTDecodedData(BaseModel):
@@ -50,3 +51,6 @@ class RegisterRequestData(BaseModel):
             raise ValueError("Password must not contain spaces")
         return value
     
+class ResourceNames(StrEnum):
+    USERS = "users"
+    ADMINS = "admin"
