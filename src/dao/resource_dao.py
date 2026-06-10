@@ -10,6 +10,12 @@ class ResourceDAO:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
         
+    async def get_resource(self, resource_name: ResourceNames) -> Resources | None:
+        query = select(Resources).where(Resources.name == resource_name)
+        result = await self.session.execute(query)
+        resource = result.scalar_one_or_none()
+        return resource
+    
     async def _get_resources(self) -> Sequence[Resources]:
         qeury = select(Resources)
         result = await self.session.execute(qeury)

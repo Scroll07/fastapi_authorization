@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from src.dao.rules_dao import RulesDao
 from src.dao.user_dao import UserDao
 from src.schemas.db_schema import UserFields
 from src.schemas.api_schema import JWTDecodedData
@@ -18,8 +19,6 @@ async def get_db():
         
 security = HTTPBearer()
 
-
-    
 
 async def verify_user(
     db = Depends(get_db),

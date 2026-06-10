@@ -9,7 +9,13 @@ from src.schemas.db_schema import UserRoles
 class RoleDAO:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
-        
+    
+    async def get_role(self, role_name: UserRoles) -> Roles | None:
+        query = select(Roles).where(Roles.name == role_name)
+        result = await self.session.execute(query)
+        role = result.scalar_one_or_none()
+        return role
+    
     async def _get_roles(self) -> Sequence[Roles]:
         qeury = select(Roles)
         result = await self.session.execute(qeury)

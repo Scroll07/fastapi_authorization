@@ -51,6 +51,34 @@ class RegisterRequestData(BaseModel):
             raise ValueError("Password must not contain spaces")
         return value
     
+class PatchRequestData(BaseModel):
+    first_name: str 
+    last_name: str
+    middle_name: str
+    email: EmailStr
+    
+    @field_validator('first_name')
+    def validate_fisrt_name(cls, value: str):
+        value = value.strip()
+        if " " in value:
+            raise ValueError("String must not contain spaces")
+        return value
+    
+    @field_validator('last_name')
+    def validate_last_name(cls, value: str):
+        value = value.strip()
+        if " " in value:
+            raise ValueError("String must not contain spaces")
+        return value
+    
+    @field_validator('middle_name')
+    def validate_middle_name(cls, value: str):
+        value = value.strip()
+        if " " in value:
+            raise ValueError("String must not contain spaces")
+        return value
+    
+
 class ResourceNames(StrEnum):
     USER = "users"
     ADMINS = "admin"

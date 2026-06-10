@@ -17,6 +17,7 @@ class Users(Base):
     middle_name: Mapped[str]
     email: Mapped[str]
     password_hash: Mapped[str]
+    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"))
     is_active: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True) ,default=lambda: datetime.now(timezone.utc))
 

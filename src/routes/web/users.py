@@ -6,13 +6,13 @@ from pydantic import ValidationError
 
 from src.dependencies import get_db, verify_user
 from src.dao.user_dao import UserDao
-from src.schemas.db_schema import UserFields, UserCreateData
-from src.schemas.api_schema import JWTDecodedData, RegisterRequestData
+from src.schemas.db_schema import UserFields, UserCreateData, UserRoles
+from src.schemas.api_schema import JWTDecodedData, RegisterRequestData, PatchRequestData
 from src.security import PasswordService
 from src.jwt_service import jwt_service
 from src.dao.session_dao import SessionDao
 from src.settings import ACCESS_TOKEN_EXPIRE_IN_MIN
-
+from src.dao.role_dao import RoleDAO
 
 
 
@@ -51,7 +51,12 @@ async def register(
             email=user_data.email,
             password_hash=password_hash
         )
-        user = await user_dao.create_user(data=create_data)
+        role_dao = RoleDAO(session=db)
+        user_role = await role_dao.get_role(role_name=UserRoles.USER)
+        if not user_role:
+            print("Cant get role")
+            raise HTTPException(500, "Internal server error")
+        user = await user_dao.create_user(data=create_data, role_id=user_role.id)
     
         return {
             "ok": True,
@@ -111,7 +116,6 @@ async def logout(
     await session_dao.make_unactive_session(session_id=data.sid)
     await db.commit()
     
-    #probably redirect to other page
     return {
         "ok": True,
         "detail": "Logout successful",
@@ -130,32 +134,44 @@ async def soft_delete(
     await user_dao.make_unactive_user(user_id=int(data.sub))
     await db.commit()
     
-    #probably redirect to other page
     return {
         "ok": True,
         "detail": "Account was successully deleted",
     }    
     
 
-# @web_users.patch("/me")
-# async def patch_user(
-#     db: AsyncSession = Depends(get_db),
-#     data: JWTDecodedData = Depends(verify_user)
-# ):    
-#     session_dao = SessionDao(session=db)
-#     await session_dao.make_unactive_session(session_id=data.sid)
+@web_users.patch("/me")
+async def patch_user(
+    first_name: str = Form(..., min_length=1, max_length=30),
+    last_name: str = Form(..., min_length=1, max_length=30),
+    middle_name: str = Form(..., min_length=1, max_length=30),
+    email: str = Form(..., min_length=6, max_length=50),
+    db: AsyncSession = Depends(get_db),
+    data: JWTDecodedData = Depends(verify_user)
+):        
+    try:
+        patch_data = PatchRequestData(
+            first_name=first_name,
+            last_name=last_name,
+            middle_name=middle_name,
+            email=email,
+        )
+    except ValidationError as e:
+        raise HTTPException(422, e.errors()[0].get("msg"))
 
-#     user_dao = UserDao(session=db)
-#     assert data.sub is int
-#     await user_dao.make_unactive_user(user_id=data.sub)
-#     await db.commit()
+    try:    
+        user_dao = UserDao(session=db)
+        await user_dao.patch_user(user_id=int(data.sub), data=patch_data)
+        await db.commit()
+    except Exception as e:
+        print(e)
+        raise HTTPException(500, "Internal server error")
+
     
-#     #probably redirect to other page
-#     return {
-#         "ok": True,
-#         "detail": "Account was successully deleted",
-#     }    
+    return {
+        "ok": True,
+        "detail": "Data was successully changed",
+    }    
     
 
 
-    
