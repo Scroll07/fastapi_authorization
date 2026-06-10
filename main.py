@@ -5,7 +5,9 @@ from src.database import async_engine, async_session
 from src.dao.role_dao import RoleDAO
 from src.dao.resource_dao import ResourceDAO
 from src.dao.rules_dao import RulesDao
+
 from src.routes.web.users import web_users
+from src.routes.web.resources import web_resources
 
 
 @asynccontextmanager
@@ -33,5 +35,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(web_users, prefix="/web", tags=["USERS", "WEB"])
+app.include_router(web_resources, prefix="/web", tags=["RESOURCES", "WEB", "ADMIN"])
 
 

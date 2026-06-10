@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -81,7 +82,18 @@ class RulesDao:
         rule = result.scalar_one_or_none()
         return rule
     
+    async def _get_all_rules(self) -> Sequence[AccessRules]:
+        query = select(AccessRules)
+        result = await self.session.execute(query)
+        rules = result.scalars().all()
+        return rules
+    
     async def initialize_rules(self, roles: list[Roles], resources: list[Resources]) -> None:
+        rules_sould_be = len(UserRoles) * len(ResourceNames)
+        rules = await self._get_all_rules()
+        if len(rules) < rules_sould_be:
+            return None
+        
         roles_map = {r.name: r for r in roles}
         resources_map = {r.name: r for r in resources}
         for role_name, permisions in PERMISSION_MATRIX.items():
