@@ -21,8 +21,8 @@ async def lifespan(app: FastAPI):
             await session.flush()
             await rules_dao.initialize_rules(roles=roles, resources=resources)
         
-        
         await session.commit()
+        
         
         
     yield

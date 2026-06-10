@@ -82,4 +82,21 @@ class RulesDao:
         return rule
     
     async def initialize_rules(self, roles: list[Roles], resources: list[Resources]) -> None:
-        pass
+        roles_map = {r.name: r for r in roles}
+        resources_map = {r.name: r for r in resources}
+        for role_name, permisions in PERMISSION_MATRIX.items():
+            role = roles_map.get(role_name)
+            if not role:
+                continue
+            for resource_name, perms in permisions.items():
+                resource = resources_map.get(resource_name)
+                if not resource:
+                    continue
+                await self.create_rule(
+                    role_id=role.id,
+                    resource_id=resource.id,
+                    can_read=perms.get("can_read", False),
+                    can_create=perms.get("can_create", False),
+                    can_update=perms.get("can_update", False),
+                    can_delete=perms.get("can_delete", False)
+                )
